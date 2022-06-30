@@ -55,6 +55,6 @@ POST /movies
   
   **Ссылка на домен Backend**
   
-  https://api.alina.movies.nomoreparties.sbs/
+  https://api.alina.movies.nomoreparties.sbs
   
   *Публичный IP-адрес сервера:* 51.250.30.128
