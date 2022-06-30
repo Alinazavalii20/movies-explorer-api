@@ -52,3 +52,9 @@ POST /movies
   npm run start запуск сервера
 
   npm run dev запуск сервера с hot reload
+  
+  **Ссылка на домен Backend**
+  
+  https://api.alina.movies.nomoreparties.sbs/
+  
+  *Публичный IP-адрес сервера:* 51.250.30.128
