@@ -5,8 +5,8 @@ const { patchUser, getUser } = require('../controllers/user');
 
 const userRouter = express.Router();
 
-userRouter.get('/users/me', getUser);
+userRouter.get('/me', getUser);
 
-userRouter.patch('/users/me', userUpdateValid, patchUser);
+userRouter.patch('/me', userUpdateValid, patchUser);
 
 module.exports = userRouter;

@@ -2,12 +2,11 @@ const Movie = require('../models/movies');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const errorMessange = require('../utils/Errors');
 
 module.exports.getMovies = async (req, res, next) => {
-  const owner = req.user_id;
-
-  Movie.find({ owner })
-    .then((movie) => res.send(movie))
+  Movie.find({})
+    .then((movies) => res.send(movies))
     .catch(next);
 };
 
@@ -20,7 +19,7 @@ module.exports.postMovie = async (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     thumbnail,
     movieId,
     nameRU,
@@ -34,7 +33,7 @@ module.exports.postMovie = async (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     thumbnail,
     movieId,
     nameRU,
@@ -42,10 +41,9 @@ module.exports.postMovie = async (req, res, next) => {
     owner,
   })
     .then((movie) => res.send(movie))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError(errorMessange.movieError));
       }
       next(err);
     });
@@ -56,11 +54,11 @@ module.exports.deleteMovie = async (req, res, next) => {
 
   Movie.findById(movieId)
     .orFail(() => {
-      throw new NotFoundError('Фильм не найдена');
+      throw new NotFoundError(errorMessange.movieNotFoundError);
     })
     .then((movie) => {
       if (!movie.owner.equals(req.user._id)) {
-        return next(new ForbiddenError('Нельзя удалить фильм'));
+        return next(new ForbiddenError(errorMessange.forbiddenError));
       }
       return movie.remove()
         .then(() => res.send({ message: 'Фильм удален' }));

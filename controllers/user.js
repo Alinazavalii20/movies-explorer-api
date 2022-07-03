@@ -7,6 +7,7 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const UnAuthtorizeError = require('../errors/UnAuthtorizeError');
+const errorMessange = require('../utils/Errors');
 
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -20,8 +21,8 @@ module.exports.login = async (req, res, next) => {
       );
       res.send({ token });
     })
-    .catch((err) => {
-      next(new UnAuthtorizeError(err.message));
+    .catch(() => {
+      next(new UnAuthtorizeError(errorMessange.authorizationUserError));
     });
 };
 
@@ -29,13 +30,13 @@ module.exports.getUser = async (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        next(new NotFoundError(errorMessange.userNotFoundError));
       }
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Невалидный id пользователя'));
+        next(new BadRequestError(errorMessange.idError));
       } else {
         next(err);
       }
@@ -58,9 +59,9 @@ module.exports.createUser = async (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new ConflictError('Данный email уже зарегестрирован.');
+        throw new ConflictError(errorMessange.emailUserError);
       } else if (err.name === 'ValidationError') {
-        throw new BadRequestError('Передан неверный логин или пароль.');
+        throw new BadRequestError(errorMessange.authorizationUserError);
       }
       next(err);
     })
@@ -79,13 +80,12 @@ module.exports.patchUser = async (req, res, next) => {
     },
   )
     .then((user) => res.send({ user }))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(BadRequestError('Переданы некорректные данные'));
+        next(BadRequestError(errorMessange.authorizationUserError));
       }
       if (err.name === 'CastError') {
-        return next(new BadRequestError('Передан некорретный Id'));
+        next(new BadRequestError(errorMessange.idError));
       }
       next(err);
     });

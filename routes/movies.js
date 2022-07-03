@@ -5,10 +5,10 @@ const { getMovies, postMovie, deleteMovie } = require('../controllers/movies');
 
 const moviesRouter = express.Router();
 
-moviesRouter.get('/movies', getMovies);
+moviesRouter.get('/', getMovies);
 
-moviesRouter.post('/movies', moviesPostValid, postMovie);
+moviesRouter.post('/', moviesPostValid, postMovie);
 
-moviesRouter.delete('/movies/:movieId', moviesDeleteValid, deleteMovie);
+moviesRouter.delete('/:movieId', moviesDeleteValid, deleteMovie);
 
 module.exports = moviesRouter;

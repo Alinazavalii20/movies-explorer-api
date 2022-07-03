@@ -4,20 +4,23 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cors = require('cors');
+const helmet = require('helmet');
 
 const auth = require('./middlewares/auth');
-const userRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
-const route = require('./routes/route');
+const Router = require('./routes/index');
 const NotFoundError = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const errorMessange = require('./utils/Errors');
+const limiter = require('./middlewares/limiter');
 
 const { PORT = 3001 } = process.env;
 const app = express();
 
 app.use(requestLogger);
 app.use(express.json());
+app.use(helmet());
+app.use(limiter);
 app.use(cors());
 
 app.use(bodyParser.json());
@@ -33,12 +36,10 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(route);
-app.use('/users', auth, userRouter);
-app.use('/movies', auth, moviesRouter);
+app.use(Router);
 
 app.use('/', auth, (req, res, next) => {
-  next(new NotFoundError('Страница по указанному адресу не найдена'));
+  next(new NotFoundError(errorMessange.pageNotFoundError));
 });
 
 app.use(errorLogger);
