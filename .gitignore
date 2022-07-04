@@ -1,5 +1,15 @@
-/node_modules
-/.idea
-/.DS_Store
+# Logs
+logs
 *.log
-.env
+npm-debug.log*
+
+# Dependency directory
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.DS_Store
+.idea
+.vscode

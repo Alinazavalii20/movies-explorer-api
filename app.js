@@ -6,22 +6,23 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 const helmet = require('helmet');
 
+const limiter = require('./middlewares/limiter');
 const auth = require('./middlewares/auth');
-const Router = require('./routes/index');
+
+const route = require('./routes');
 const NotFoundError = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorMessange = require('./utils/Errors');
-const limiter = require('./middlewares/limiter');
 
 const { PORT = 3001 } = process.env;
 const app = express();
 
 app.use(requestLogger);
 app.use(express.json());
+app.use(cors());
 app.use(helmet());
 app.use(limiter);
-app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,7 +37,7 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(Router);
+app.use(route);
 
 app.use('/', auth, (req, res, next) => {
   next(new NotFoundError(errorMessange.pageNotFoundError));

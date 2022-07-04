@@ -10,33 +10,33 @@
   - Удаление фильмов 
 
 **API**
-
-POST /signup
   - *Создаёт пользователя с переданными в теле*
 
- POST /signin
+  POST /signup
+
   - *Проверяет переданные в теле почту и пароль*
 
- 
-  GET /users/me
+  POST /signin 
+
   - *Возвращает информацию о пользователе (email и имя)*
 
+  GET /users/me
 
-  PATCH /users/me
   - *Обновляет информацию о пользователе (email и имя)*
 
+  PATCH /users/me
 
-  GET /movies
   - *Возвращает все сохранённые текущим  пользователем фильмы*
 
+  GET /movies
 
-POST /movies
   - *Создаёт фильм с переданными в теле(country, director, duration, year, description, image, trailer, nameRU, nameEN и thumbnail, movieId)*
 
+  POST /movies
 
-  DELETE /movies/_id
   - *Удаляет сохранённый фильм по id*
 
+  DELETE /movies/_id
 
 **Используются в создании проекта:** 
 
@@ -52,9 +52,3 @@ POST /movies
   npm run start запуск сервера
 
   npm run dev запуск сервера с hot reload
-  
-  **Ссылка на домен Backend**
-  
-  https://api.alina.movies.nomoreparties.sbs
-  
-  *Публичный IP-адрес сервера:* 51.250.30.128
