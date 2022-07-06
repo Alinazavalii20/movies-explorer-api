@@ -53,6 +53,6 @@
 
   npm run dev запуск сервера с hot reload
   
-  **Публичный IP-адрес сервера:** 84.201.154.207
+  **Публичный IP-адрес сервера:** 51.250.30.128
 
 **Backend** api.alina.movies.nomoreparties.sbs
