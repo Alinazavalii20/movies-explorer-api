@@ -1,13 +1,13 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { JWT_KEY } = require('../utils/config');
 
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 const UnAuthtorizeError = require('../errors/UnAuthtorizeError');
-const errorMessange = require('../utils/Errors');
+const { errorMessange } = require('../utils/Errors');
 
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -16,7 +16,7 @@ module.exports.login = async (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        JWT_KEY,
         { expiresIn: '7d' },
       );
       res.send({ token });
@@ -27,7 +27,8 @@ module.exports.login = async (req, res, next) => {
 };
 
 module.exports.getUser = async (req, res, next) => {
-  User.findById(req.user._id)
+  const userId = req.user._id;
+  User.findById(userId)
     .then((user) => {
       if (!user) {
         next(new NotFoundError(errorMessange.userNotFoundError));
@@ -70,8 +71,9 @@ module.exports.createUser = async (req, res, next) => {
 
 module.exports.patchUser = async (req, res, next) => {
   const { name, email } = req.body;
+  const userId = req.user._id;
   User.findByIdAndUpdate(
-    req.user._id,
+    userId,
     { name, email },
     {
       new: true,
@@ -86,6 +88,9 @@ module.exports.patchUser = async (req, res, next) => {
       }
       if (err.name === 'CastError') {
         next(new BadRequestError(errorMessange.idError));
+      }
+      if (err.code === 11000) {
+        next(new ConflictError(errorMessange.emailUserError));
       }
       next(err);
     });

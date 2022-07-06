@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UnAuthtorizeError = require('../errors/UnAuthtorizeError');
-const errorMessange = require('../utils/Errors');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { errorMessange } = require('../utils/Errors');
+const { JWT_KEY } = require('../utils/config');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -14,7 +13,7 @@ module.exports = (req, res, next) => {
     let payload;
 
     try {
-      payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
+      payload = jwt.verify(token, JWT_KEY);
     } catch (err) {
       next(new UnAuthtorizeError(errorMessange.authorizationError));
       return;

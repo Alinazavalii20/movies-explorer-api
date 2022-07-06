@@ -15,6 +15,12 @@ exports.loginUsersValid = celebrate({
   }),
 });
 
+exports.userGetValid = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24).hex(),
+  }),
+});
+
 exports.userUpdateValid = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),

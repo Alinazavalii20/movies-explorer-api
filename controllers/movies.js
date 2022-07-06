@@ -2,7 +2,7 @@ const Movie = require('../models/movies');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const errorMessange = require('../utils/Errors');
+const { errorMessange } = require('../utils/Errors');
 
 module.exports.getMovies = async (req, res, next) => {
   Movie.find({})
