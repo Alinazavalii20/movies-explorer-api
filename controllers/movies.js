@@ -5,8 +5,13 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const { errorMessange } = require('../utils/Errors');
 
 module.exports.getMovies = async (req, res, next) => {
-  Movie.find({})
-    .then((movies) => res.send(movies))
+  Movie.find({ owner: req.user._id })
+    .then((movies) => {
+      if (!movies) {
+        throw new NotFoundError(errorMessange.notFountEroor);
+      }
+      res.send(movies);
+    })
     .catch(next);
 };
 
@@ -40,7 +45,20 @@ module.exports.postMovie = async (req, res, next) => {
     nameEN,
     owner,
   })
-    .then((movie) => res.send(movie))
+    .then((movie) => res.send({
+      _id: movie._id,
+      country: movie.country,
+      director: movie.director,
+      duration: movie.duration,
+      year: movie.year,
+      description: movie.description,
+      image: movie.image,
+      trailerLink: movie.trailerLink,
+      nameRU: movie.nameRU,
+      nameEN: movie.nameEN,
+      thumbnail: movie.thumbnail,
+      movieId: movie.movieId,
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(errorMessange.movieError));
@@ -51,17 +69,19 @@ module.exports.postMovie = async (req, res, next) => {
 
 module.exports.deleteMovie = async (req, res, next) => {
   const { movieId } = req.params;
+  const userId = req.user._id;
 
   Movie.findById(movieId)
     .orFail(() => {
       throw new NotFoundError(errorMessange.movieNotFoundError);
     })
     .then((movie) => {
-      if (!movie.owner.equals(req.user._id)) {
-        return next(new ForbiddenError(errorMessange.forbiddenError));
+      if (movie.owner.toString() === userId) {
+        return Movie.findByIdAndRemove(movieId)
+          .then(() => res.send({ message: 'Фильм удален' }))
+          .catch(next);
       }
-      return movie.remove()
-        .then(() => res.send({ message: 'Фильм удален' }));
+      throw new ForbiddenError(errorMessange.forbiddenError);
     })
     .catch(next);
 };
