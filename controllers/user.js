@@ -46,7 +46,7 @@ module.exports.getUser = async (req, res, next) => {
 
 module.exports.createUser = async (req, res, next) => {
 const {
-    name, email, id, password,
+    name, email, _id, password,
   } = req.body;
 
   bcrypt.hash(password, 10)
@@ -56,7 +56,7 @@ const {
     .then(((user) => User.findById({ _id: user._id })))
     .then(() => res.status(200).send({
       data: {
-        name, email, id,
+        name, email, _id,
       },
     }))
     .catch((err) => {
