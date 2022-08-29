@@ -45,14 +45,20 @@ module.exports.getUser = async (req, res, next) => {
 };
 
 module.exports.createUser = async (req, res, next) => {
-  const { name, email, password } = req.body;
+ const {
+    name, email, password,
+  } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, email, password: hash,
     }))
-    .then((({ _id }) => User.findById(_id)))
-    .then((user) => res.send(user))
+    .then(((user) => User.findById({ _id: user._id })))
+    .then(() => res.status(200).send({
+      data: {
+        name, email,
+      },
+    }))
     .catch((err) => {
       if (err.code === 11000) {
         throw new ConflictError(errorMessange.emailUserError);
