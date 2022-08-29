@@ -53,7 +53,7 @@ module.exports.createUser = async (req, res, next) => {
     .then((hash) => User.create({
       name, email, password: hash,
     }))
-    .then(((user) => User.findById({ _id: user._id })))
+    .then((({ _id }) => User.findById(_id)))
     .then(() => res.status(200).send({
       data: {
         name, email,
