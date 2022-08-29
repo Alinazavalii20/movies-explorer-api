@@ -56,7 +56,7 @@ module.exports.createUser = async (req, res, next) => {
     .then((({ _id }) => User.findById(_id)))
     .then(() => res.status(200).send({
       data: {
-        name, email,
+        name, email, _id
       },
     }))
     .catch((err) => {
