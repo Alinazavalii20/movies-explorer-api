@@ -1,0 +1,15 @@
+module.exports.errorMessange = {
+  userNotFoundError: '400: User not found',
+  serverError: '500: Server Error',
+  badReqError: '400: Server Error',
+  idError: '400: Invalid ID',
+  badUrlError: '400: Incorrect URL',
+  notFountEroor: '404: Object not found',
+  authorizationError: '401: Auhorization required',
+  authorizationUserError: '400: Wrong email or password',
+  emailUserError: '409: This email is already registered',
+  movieError: '400: Movie is not correct',
+  movieNotFoundError: '400: Movie not found',
+  pageNotFoundError: '404: Page not found',
+  forbiddenError: '403: Forbidden',
+};
