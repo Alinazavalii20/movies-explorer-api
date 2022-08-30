@@ -46,17 +46,17 @@ module.exports.getUser = async (req, res, next) => {
 
 module.exports.createUser = async (req, res, next) => {
   const {
-    name, email, password,
+    name, email, password, _id,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, email, password: hash,
     }))
-    .then((({ _id }) => User.findById(_id)))
+    /* .then((({ _id }) => User.findById(_id))) */
     .then(() => res.status(200).send({
       data: {
-        name, email,
+        name, email, _id,
       },
     }))
     .catch((err) => {
